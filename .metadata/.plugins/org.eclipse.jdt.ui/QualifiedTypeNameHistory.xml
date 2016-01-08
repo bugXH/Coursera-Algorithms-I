@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<qualifiedTypeNameHistroy>
+<fullyQualifiedTypeName name="java.lang.IndexOutOfBoundsException"/>
+<fullyQualifiedTypeName name="java.lang.IllegalArgumentException"/>
+<fullyQualifiedTypeName name="java.util.NoSuchElementException"/>
+<fullyQualifiedTypeName name="edu.princeton.cs.algs4.StdIn"/>
+<fullyQualifiedTypeName name="java.util.Iterator"/>
+<fullyQualifiedTypeName name="java.util.Comparator"/>
+<fullyQualifiedTypeName name="java.util.TreeSet"/>
+<fullyQualifiedTypeName name="java.lang.NullPointerException"/>
+<fullyQualifiedTypeName name="edu.princeton.cs.algs4.RedBlackBST"/>
+<fullyQualifiedTypeName name="edu.princeton.cs.algs4.BinarySearchST"/>
+<fullyQualifiedTypeName name="edu.princeton.cs.algs4.BST"/>
+<fullyQualifiedTypeName name="edu.princeton.cs.algs4.SET"/>
+<fullyQualifiedTypeName name="edu.princeton.cs.algs4.Point2D"/>
+<fullyQualifiedTypeName name="edu.princeton.cs.algs4.RectHV"/>
+<fullyQualifiedTypeName name="edu.princeton.cs.algs4.StdDraw"/>
+<fullyQualifiedTypeName name="edu.princeton.cs.algs4.MinPQ"/>
+<fullyQualifiedTypeName name="edu.princeton.cs.algs4.StdOut"/>
+<fullyQualifiedTypeName name="edu.princeton.cs.algs4.In"/>
+</qualifiedTypeNameHistroy>

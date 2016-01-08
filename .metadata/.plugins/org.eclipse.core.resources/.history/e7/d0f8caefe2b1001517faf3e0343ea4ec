@@ -1,0 +1,31 @@
+import java.util.Arrays;
+
+public class BruteCollinearPoints {
+	public BruteCollinearPoints(Point[] points) { // finds all line segments containing 4 points
+		// check null arguments
+		if (points == null) {
+			throw new java.lang.NullPointerException("Array is null!");
+		}
+		for (int i = 0; i < points.length; i++) {
+			if (points[i] == null) {
+				throw new java.lang.NullPointerException("Null entry in array!");
+			}
+		}
+		// check duplications
+		for (int i = 0; i < points.length - 1; i++) {
+			for (int j = i + 1; j < points.length; j++) {
+				if (points[i].compareTo(points[j]) == 0) {
+					throw new java.lang.IllegalArgumentException("A repeated point is in the array!");
+				}
+			}
+		}
+	}
+	
+	public int numberOfSegments() {   // the number of line segments
+	
+	}
+	
+	public LineSegment[] segments() {   // the line segments
+	
+	}
+}

@@ -1,0 +1,282 @@
+import edu.princeton.cs.algs4.*;
+import java.util.ArrayList;
+
+public class KdTree {
+	
+	private static boolean VERTICAL = true;
+	private static boolean HORIZONTAL = false;
+	
+	private Node root;
+	
+	private class Node {
+		private Point2D p;			// the point, used as (both) the key and the value
+		private Node left, right;   // left and right subtree
+		private boolean direction;  // the direction of the node (VERTICAL or HORIZONTAL)
+		private int N; // subtree count
+		private RectHV rect;
+		
+		public Node(Point2D p, int N) {
+			this.p = p;
+			this.N = N;
+		}
+	}
+	
+	public KdTree() {  // construct an empty set of points
+	}
+	
+	public boolean isEmpty() {  // is the set empty?
+		return (root == null);
+	}
+	
+	public int size() {     // number of points in the set
+		return size(root);
+	}
+	
+	private int size(Node x) {
+		if (x == null) {
+			return 0;
+		}
+		else {
+			return x.N;
+		}
+	}
+	
+	private boolean isHorizontal(Node x) {
+		if (x == null) {
+			return false;
+		}
+		else {
+			return (x.direction == HORIZONTAL);
+		}
+	}
+	
+	public int comparex(Point2D p, Point2D q) { 
+		double diff_x = p.x() - q.x();
+		if (diff_x > 0) {
+			return 1;
+		}
+		else if (diff_x < 0) {
+			return -1;
+		}
+		else {
+			return 0;
+		}
+	}
+	
+	public int comparey(Point2D p, Point2D q) { 
+		double diff_y = p.y() - q.y();
+		if (diff_y > 0) {
+			return 1;
+		}
+		else if (diff_y < 0) {
+			return -1;
+		}
+		else {
+			return 0;
+		}
+	} 
+	
+	public void insert(Point2D p) {   // add the point to the set (if it is not already in the set)
+		if (p == null) {
+			throw new java.lang.NullPointerException("null argument!");
+		}
+		root = insert(root, p);
+		if (root.rect == null) {
+			root.rect = new RectHV(0, 0, 1, 1);
+		}
+		root.direction = VERTICAL;
+	}
+	
+	public Node insert(Node x, Point2D p) { // insert a node with point p in the subtree rooted at h
+		if (x == null) {
+			return new Node(p, 1);
+		}
+		
+		int cmp = 0;
+		if (x.direction == VERTICAL) {
+			cmp = comparex(p, x.p);
+		}
+		else {
+			cmp = comparey(p, x.p);
+		}
+		
+		if (cmp < 0) {
+			x.left = insert(x.left, p);
+			x.left.direction = !x.direction;
+			RectHV newrect;
+			if (x.direction == VERTICAL) {
+				newrect = new RectHV(x.rect.xmin(), x.rect.ymin(), x.p.x(), x.rect.ymax());
+			}
+			else {
+				newrect = new RectHV(x.rect.xmin(), x.rect.ymin(), x.rect.xmax(), x.p.y());
+			}
+			x.left.rect = newrect;
+		}
+		else if (cmp > 0) {
+			x.right = insert(x.right, p);
+			x.right.direction = !x.direction;
+			RectHV newrect;
+			if (x.direction == VERTICAL) {
+				newrect = new RectHV(x.p.x(), x.rect.ymin(), x.rect.xmax(), x.rect.ymax());
+			}
+			else {
+				newrect = new RectHV(x.rect.xmin(), x.p.y(), x.rect.xmax(), x.rect.ymax());
+			}
+			x.right.rect = newrect;
+		}
+		else {
+			x.p = p;
+		}
+		x.N = size(x.left) + size(x.right) + 1;
+		return x;
+	}
+	
+	public boolean contains(Point2D p) {  // does the set contain point p?
+		if (p == null) {
+			throw new java.lang.NullPointerException("null argument!");
+		}
+		Node x = root;
+		boolean get = false;
+		int cmp = 0;
+		while (x != null) {
+			if (x.direction == VERTICAL) {
+				cmp = comparex(p, x.p);
+			}
+			else {
+				cmp = comparey(p, x.p);
+			}
+			
+			if (cmp < 0) {
+				x = x.left;
+			}
+			else if (cmp > 0) {
+				x = x.right;
+			}
+			else {
+				get = true;
+				break;
+			}
+		}
+		return get;
+	}
+	
+	public void draw() {  // draw all points to standard draw
+		draw(root);
+	}
+	
+	private void draw(Node x) {
+		if (x == null) {
+			return;
+		}
+		StdDraw.setPenColor();
+		StdDraw.setPenRadius(0.02);
+		StdDraw.point(x.p.x(), x.p.y());
+		StdDraw.setPenRadius(0.01);
+		if (x.direction == VERTICAL) {
+			StdDraw.setPenColor(StdDraw.RED);
+			StdDraw.line(x.p.x(), x.rect.ymin(), x.p.x(), x.rect.ymax());
+		}
+		else {
+			StdDraw.setPenColor(StdDraw.BLUE);
+			StdDraw.line(x.rect.xmin(), x.p.y(), x.rect.xmax(), x.p.y());
+		}
+		draw(x.left);
+		draw(x.right);
+	}
+	
+	public Iterable<Point2D> range(RectHV rect) { // all points that are inside the rectangle
+		ArrayList<Point2D> points = new ArrayList<Point2D>();
+		getpoints(root, points, rect);
+		return points;
+	}
+	
+	private void getpoints(Node x, ArrayList<Point2D> points, RectHV rect) {
+		if (x == null) {
+			return;
+		}
+		if (!rect.intersects(x.rect)) {
+			return;
+		}
+		points.add(x.p);
+		getpoints(x.left, points, rect);
+		getpoints(x.right, points, rect);
+	}
+	
+	public Point2D nearest(Point2D p) { // a nearest neighbor in the set to point p; null if the set is empty
+		Point2D current = getnearest(root, p, root.p, 1);
+		return current;
+	}
+	
+	private Point2D getnearest(Node x, Point2D p, Point2D current, double closestdist) {
+		if (x == null) {
+			return current;
+		}
+		if (closestdist < x.rect.distanceTo(p)) {
+			return current;
+		}
+		double current_dist = x.p.distanceTo(p);
+		if (closestdist > current_dist) {
+			current = x.p;
+			closestdist = current_dist;
+		}
+		
+		int cmp = 0;
+		if (x.direction == VERTICAL) {
+			cmp = comparex(p, x.p);
+		}
+		else {
+			cmp = comparey(p, x.p);
+		}
+		
+		Node first, second;
+		if (cmp < 0) {
+			first = x.left;
+			second = x.right;
+		}
+		else {
+			first = x.right;
+			second = x.left;
+		}
+		current = getnearest(first, p, current, closestdist);
+		current = getnearest(second, p, current, closestdist);
+		return current;
+	}
+
+    public static void main(String[] args) { // unit testing of the methods (optional)
+    	KdTree tree = new KdTree();
+		tree.insert(new Point2D(0.4, 0.2));
+		tree.insert(new Point2D(0.2, 0.1));
+		tree.insert(new Point2D(0.7, 0.3));
+		tree.insert(new Point2D(0.3, 0.6));
+		
+		StdOut.println("Find existing point: " + tree.contains(new Point2D(0.7, 0.3)));
+		StdOut.println("Find non-existant p: " + !tree.contains(new Point2D(0.2, 0.6)));
+		StdOut.println("Count of nodes = 4 : " + tree.size());
+
+		tree.insert(new Point2D(0.3, 0.6));
+		
+		StdOut.println("Cannot insert same : " + tree.size());
+		
+		StdDraw.setPenRadius(0.01);
+		tree.draw();
+		
+		RectHV rect = new RectHV(0.3, 0.1, 0.9, 0.9);
+		StdDraw.setPenColor(StdDraw.BLUE);
+		StdDraw.setPenRadius(0.002);
+		rect.draw();
+		
+		for(Point2D point : tree.range(rect)) {
+			StdOut.println(point.toString());
+		}
+		
+		StdOut.println();
+		
+		StdDraw.setPenColor(StdDraw.BLACK);
+		StdDraw.setPenRadius(0.02);
+		Point2D comp = new Point2D(0.4, 0.5);
+		comp.draw();
+		
+		StdOut.println(tree.nearest(comp).toString());
+    }
+
+}
