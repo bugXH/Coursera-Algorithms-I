@@ -9,7 +9,7 @@ public class Percolation {
 	
 	private boolean grid[] = null;
 	private int N; // length of grid
-	private WeightedQuickUnionUF perc; // keep track of the "to-percolate" allocation
+	private WeightedQuickUnionUF perc, perc_extra; // keep track of the "to-percolate" allocation
 	// for surrounding checking
 	private int surr_x[] = {0, 0, -1, 1}; // up down left right
 	private int surr_y[] = {-1, 1, 0, 0}; // up down left right
@@ -21,6 +21,9 @@ public class Percolation {
 		// 2 extra sites are used as virtual roots for top and bottom,
 		// indexed as N * N and N * N + 1 
 		perc = new WeightedQuickUnionUF(N * N + 2);
+		// the perc_extra is to prevent the "backwash" problem
+		// only blocks directly connected to the top are full
+		perc_extra = new WeightedQuickUnionUF(N * N + 1);
 	}
 	
 	
@@ -46,14 +49,16 @@ public class Percolation {
 				int surr_site = surr_i * N + surr_j;
 				if (surr_i >= 0 && surr_i < N && surr_j >= 0 && surr_j < N && grid[surr_site]) {
 					perc.union(site_index, surr_site);
+					perc_extra.union(site_index, surr_site);
 				}
 			}
 			
 			// check top and bottom virtual roots
 			if (i == 1) { // connect the sites in the 1st row with the top
 				perc.union(site_index, N * N);
+				perc_extra.union(site_index, N * N);
 			}
-			else if (i == N) { // connect the sites in the last row with the bottom
+			if (i == N) { // connect the sites in the last row with the bottom
 				perc.union(site_index, N * N + 1);
 			}
 		}
@@ -72,7 +77,7 @@ public class Percolation {
 	
 	
 	public boolean isFull(int i, int j) {  // is site (row i, column j) full?
-		return isOpen(i, j) && perc.connected((i - 1) * N + (j - 1), N * N);
+		return isOpen(i, j) && perc_extra.connected((i - 1) * N + (j - 1), N * N);
 	}
 	
 	

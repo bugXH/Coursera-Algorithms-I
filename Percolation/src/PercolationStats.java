@@ -30,7 +30,6 @@ public class PercolationStats {
 				count++;
 			} while(!p.percolates());
 			thresh[t] = (double)count / ran_limit;
-//			System.out.println(thresh[t]);
 		}
 	}
 	
@@ -58,6 +57,8 @@ public class PercolationStats {
 		int N, T;
 		N = Integer.parseInt(args[0]);
 		T = Integer.parseInt(args[1]);
+//		N = 200;
+//		T = 100;
 		PercolationStats pstats = new PercolationStats(N, T);
 		System.out.println("mean                    = " + pstats.mean());
 		System.out.println("stddev                  = " + pstats.stddev());
