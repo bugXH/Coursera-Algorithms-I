@@ -60,22 +60,22 @@ public class Point implements Comparable<Point> {
      */
     public double slopeTo(Point that) {
         /* YOUR CODE HERE */
-    	int x0 = this.x, x1 = that.x;
-    	int y0 = this.y, y1 = that.y;
-    	if (x1 == x0) {
-    		if (y1 == y0) {
-    			return Double.NEGATIVE_INFINITY;
-    		}
-    		else {
-    			return Double.POSITIVE_INFINITY;
-    		}
-    	}
-    	else if (y1 == y0) {
-    		return 0.0;
-    	}
-    	else {
-    		return (double)(y1 - y0) / (x1 - x0);
-    	}
+        int x0 = this.x, x1 = that.x;
+        int y0 = this.y, y1 = that.y;
+        if (x1 == x0) {
+            if (y1 == y0) {
+                return Double.NEGATIVE_INFINITY;
+            }
+            else {
+                return Double.POSITIVE_INFINITY;
+            }
+        }
+        else if (y1 == y0) {
+            return 0.0;
+        }
+        else {
+            return (double) (y1 - y0) / (x1 - x0);
+        }
     }
 
     /**
@@ -92,16 +92,16 @@ public class Point implements Comparable<Point> {
      */
     public int compareTo(Point that) {
         /* YOUR CODE HERE */
-    	int x0 = this.x, x1 = that.x;
-    	int y0 = this.y, y1 = that.y;
-    	
-    	int diff_y = y0 - y1;
-    	if (diff_y == 0) {
-    		return (x0 - x1);
-    	}
-    	else {
-    		return diff_y;
-    	}
+        int x0 = this.x, x1 = that.x;
+        int y0 = this.y, y1 = that.y;
+        
+        int diff_y = y0 - y1;
+        if (diff_y == 0) {
+            return (x0 - x1);
+        }
+        else {
+            return diff_y;
+        }
     }
 
     /**
@@ -112,21 +112,21 @@ public class Point implements Comparable<Point> {
      */
     public Comparator<Point> slopeOrder() {
         /* YOUR CODE HERE */
-    	return new Comparator<Point>() {
-    		@Override
-    		public int compare(Point p1, Point p2) {
-    			double diff_slope = slopeTo(p1) - slopeTo(p2);
-    			if (diff_slope > 0) {
-    				return 1;
-    			}
-    			else if (diff_slope < 0) {
-    				return -1;
-    			}
-    			else {
-    				return 0;
-    			}
-    		}
-    	};
+        return new Comparator<Point>() {
+            @Override
+            public int compare(Point p1, Point p2) {
+                double diff_slope = slopeTo(p1) - slopeTo(p2);
+                if (diff_slope > 0) {
+                    return 1;
+                }
+                else if (diff_slope < 0) {
+                    return -1;
+                }
+                else {
+                    return 0;
+                }
+            }
+        };
     }
 
 
@@ -142,12 +142,5 @@ public class Point implements Comparable<Point> {
         return "(" + x + ", " + y + ")";
     }
 
-    /**
-     * Unit tests the Point data type.
-     */
-    public static void main(String[] args) {
-        /* YOUR CODE HERE */
-    	Point p1 = new Point(1, 2);
-    	Point p2 = new Point(2, 2);
-    }
+
 }
