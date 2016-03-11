@@ -45,7 +45,7 @@ public class KdTree {
 		}
 	}
 	
-	public int comparex(Point2D p, Point2D q) { 
+	private int comparex(Point2D p, Point2D q) { 
 		double diff_x = p.x() - q.x();
 		if (diff_x > 0) {
 			return 1;
@@ -58,7 +58,7 @@ public class KdTree {
 		}
 	}
 	
-	public int comparey(Point2D p, Point2D q) { 
+	private int comparey(Point2D p, Point2D q) { 
 		double diff_y = p.y() - q.y();
 		if (diff_y > 0) {
 			return 1;
@@ -82,7 +82,7 @@ public class KdTree {
 		root.direction = VERTICAL;
 	}
 	
-	public Node insert(Node x, Point2D p) { // insert a node with point p in the subtree rooted at h
+	private Node insert(Node x, Point2D p) { // insert a node with point p in the subtree rooted at h
 		if (x == null) {
 			return new Node(p, 1);
 		}

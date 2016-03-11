@@ -1,0 +1,94 @@
+import java.util.Arrays;
+import java.util.ArrayList;
+
+import edu.princeton.cs.algs4.In;
+import edu.princeton.cs.algs4.StdDraw;
+import edu.princeton.cs.algs4.StdOut;
+
+
+public class FastCollinearPoints {
+    private ArrayList<LineSegment> collinear;
+    
+    public FastCollinearPoints(Point[] points) { // finds all line segments containing 4 or more points
+        // check null arguments
+        if (points == null) {
+            throw new java.lang.NullPointerException("Array is null!");
+        }
+        for (int i = 0; i < points.length; i++) {
+            if (points[i] == null) {
+                throw new java.lang.NullPointerException("Null entry in array!");
+            }
+        }
+        // check duplications
+        for (int i = 0; i < points.length - 1; i++) {
+            for (int j = i + 1; j < points.length; j++) {
+                if (points[i].compareTo(points[j]) == 0) {
+                    throw new java.lang.IllegalArgumentException("A repeated point is in the array!");
+                }
+            }
+        }
+        // store the collinear line segment
+        collinear = new ArrayList<LineSegment>();
+        
+        // a copy of sorted points
+        Point[] pointsorted = Arrays.copyOf(points, points.length);
+        
+        for (int i = 0; i < pointsorted.length - 3; i++) {
+            //sort the array with points first, then sort it with slope
+            Arrays.sort(pointsorted);
+            Point p = pointsorted[i];
+            Arrays.sort(pointsorted, p.slopeOrder());
+            int start = 1, end = 2;
+            while (end < pointsorted.length) {
+                // find last point that is collinear with point p
+                p = pointsorted[0];
+                double slope = pointsorted[0].slopeTo(pointsorted[start]);
+                while (end < pointsorted.length && slope == pointsorted[0].slopeTo(pointsorted[end])) {
+                    end++;
+                }
+                if (end - start >= 3 && pointsorted[0].compareTo(pointsorted[start]) < 0) {
+                    collinear.add(new LineSegment(pointsorted[0], pointsorted[end - 1]));
+                }
+                // continue with the next slope
+                start = end;
+            }
+        }
+        
+    }
+   
+    public int numberOfSegments() {   // the number of line segments
+       return collinear.size();
+    }
+   
+    public LineSegment[] segments() {      // the line segments
+        return (LineSegment[]) collinear.toArray(new LineSegment[collinear.size()]);
+    }
+    
+    public static void main(String[] args) {
+        // read the N points from a file
+        In in = new In(args[0]);
+        int N = in.readInt();
+        Point[] points = new Point[N];
+        for (int i = 0; i < N; i++) {
+            int x = in.readInt();
+            int y = in.readInt();
+            points[i] = new Point(x, y);
+        }
+
+        // draw the points
+        StdDraw.show(0);
+        StdDraw.setXscale(0, 32768);
+        StdDraw.setYscale(0, 32768);
+        for (Point p : points) {
+            p.draw();
+        }
+        StdDraw.show();
+
+        // print and draw the line segments
+        FastCollinearPoints collinear = new FastCollinearPoints(points);
+        for (LineSegment segment : collinear.segments()) {
+            StdOut.println(segment);
+            segment.draw();
+        }
+    }
+}

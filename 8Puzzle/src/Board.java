@@ -1,4 +1,5 @@
 import java.util.ArrayList;
+import java.util.Arrays;
 
 import edu.princeton.cs.algs4.In;
 import edu.princeton.cs.algs4.StdOut;
@@ -8,7 +9,7 @@ public class Board {
     private int N;
     public Board(int[][] blocks) {  // construct a board from an N-by-N array of blocks
                                     // (where blocks[i][j] = block in row i, column j)
-        board = blocks;
+        board = Arrays.copyOf(blocks, blocks.length);
         N = board.length;
         
     }
@@ -174,10 +175,10 @@ public class Board {
         for (int i = 0; i < N; i++) {
             for (int j = 0; j < N; j++) {
                 if (j < N - 1) {
-                    str += Integer.toString(board[i][j]) + "  ";
+                    str += Integer.toString(board[i][j]).concat("  ");
                 }
                 else {
-                    str += Integer.toString(board[i][j]) + "\n";
+                    str += Integer.toString(board[i][j]).concat("\n");
                 }
             }
         }

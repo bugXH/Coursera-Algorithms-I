@@ -8,7 +8,6 @@ import edu.princeton.cs.algs4.StdOut;
 
 public class FastCollinearPoints {
     private ArrayList<LineSegment> collinear;
-    private ArrayList<String> collinearString;
     
     public FastCollinearPoints(Point[] points) { // finds all line segments containing 4 or more points
         // check null arguments
@@ -30,68 +29,34 @@ public class FastCollinearPoints {
         }
         // store the collinear line segment
         collinear = new ArrayList<LineSegment>();
-        collinearString = new ArrayList<String>();
         
         // a copy of sorted points
         Point[] pointsorted = Arrays.copyOf(points, points.length);
-        for (Point pointp: points) {
-            // sort according to slope order first
-            Arrays.sort(pointsorted, pointp.slopeOrder());
+        
+        for (int i = 0; i < pointsorted.length - 3; i++) {
+            //sort the array with points first, then sort it with slope
+            Arrays.sort(pointsorted);
+            Point p = pointsorted[i];
             
-            // a temp list for storing the current collinear points
-            ArrayList<Point> colltmp = new ArrayList<Point>();
-            
-            // the slope to compare with
-            double slope = pointp.slopeTo(pointsorted[0]);
-            //init the start and end points as the first point of the slope
-            Point start = pointsorted[0], end = pointsorted[0];
-            
-            // compare the slope one by one
-            for (int i = 0; i < pointsorted.length; i++) {
-                Point pointq = pointsorted[i];
-                if (pointq == pointp) {
-                    continue;
+            Arrays.sort(pointsorted, p.slopeOrder());
+            int start = 1, end = 2;
+            while (end < pointsorted.length) {
+                // find last point that is collinear with point p
+                // slope to a point itself will be -infinity,
+                // so the first point is point p
+                p = pointsorted[0];
+                double slope = p.slopeTo(pointsorted[start]);
+                while (end < pointsorted.length && slope == p.slopeTo(pointsorted[end])) {
+                    end++;
                 }
-                double slope1 = pointp.slopeTo(pointq);
-                if (slope1 == slope) {
-                    colltmp.add(pointq);
-                    // get the new start and end points, if necessary
-                    if (pointq.compareTo(start) < 0) {
-                        start = pointq;
-                    }
-                    if (pointq.compareTo(end) > 0) {
-                        end = pointq;
-                    }
+                if (end - start >= 3 && p.compareTo(pointsorted[start]) < 0) {
+                    collinear.add(new LineSegment(p, pointsorted[end - 1]));
                 }
-                // if new slope occur, check whether there are more than 3 points already
-                if (slope1 != slope || i == pointsorted.length - 1) {
-                    if (colltmp.size() >= 3) {
-                        // compare the start and end points with point p
-                        if (pointp.compareTo(start) < 0) {
-                            start = pointp;
-                        }
-                        if (pointp.compareTo(end) > 0) {
-                            end = pointp;
-                        }
-                        LineSegment newseg = new LineSegment(start, end);
-                        String newsegString = newseg.toString();
-                        if (!collinearString.contains(newsegString)) {
-                            collinearString.add(newsegString);
-                            collinear.add(newseg);
-                        }
-                        
-                    }
-                    // clean the temp list, add the new point
-                    colltmp.clear();
-                    colltmp.add(pointq);
-                    
-                    // set new start end points, set new slope to compare with
-                    start = pointq;
-                    end = pointq;
-                    slope = slope1;
-                }
+                // continue with the next distinct slope
+                start = end;
             }
         }
+        
     }
    
     public int numberOfSegments() {   // the number of line segments

@@ -1,7 +1,7 @@
 INDEX VERSION 1.127+/home/xh/workspace/Coursera-Algorithms-I/.metadata/.plugins/org.eclipse.jdt.core
 1604351940.index
-3719146981.index
 92972134.index
+3719146981.index
 2476707198.index
 350301258.index
 1244676076.index
@@ -9,9 +9,9 @@ INDEX VERSION 1.127+/home/xh/workspace/Coursera-Algorithms-I/.metadata/.plugins/
 221247486.index
 3767705585.index
 195094489.index
-4043171294.index
-3407615292.index
 3483877148.index
+3407615292.index
+4043171294.index
 2094774038.index
 3553704201.index
 104687156.index

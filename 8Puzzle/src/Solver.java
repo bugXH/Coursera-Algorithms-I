@@ -60,6 +60,7 @@ public class Solver {
                 }
             }
             dequeued = pq.delMin();
+//            System.out.println(dequeued.moves);
             dqboard = dequeued.board;
             solution.add(dqboard);
             
@@ -128,8 +129,10 @@ public class Solver {
             StdOut.println("No solution possible");
         else {
             StdOut.println("Minimum number of moves = " + solver.moves());
-            for (Board board : solver.solution())
+            for (Board board : solver.solution()) {
+                StdOut.println(board.manhattan());
                 StdOut.println(board);
+            }
         }
     }
 }
