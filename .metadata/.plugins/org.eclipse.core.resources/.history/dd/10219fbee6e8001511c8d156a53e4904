@@ -1,0 +1,146 @@
+import java.util.Comparator;
+
+import java.util.ArrayList;
+
+import edu.princeton.cs.algs4.In;
+import edu.princeton.cs.algs4.MinPQ;
+import edu.princeton.cs.algs4.StdOut;
+
+public class Solver {
+    private boolean solvable;
+    private GTNode finalnode;
+    private MinPQ<GTNode> pq;
+    private MinPQ<GTNode> pqtwin;
+    private ArrayList<Board> solution;
+    
+    // private class for Game Tree nodes
+    private class GTNode {
+        private GTNode parent;
+        private Board board;
+        private int moves;
+        
+        public GTNode(GTNode parent, Board board) {
+            this.parent = parent;
+            this.board = board;
+            if (parent == null) {
+                this.moves = 0;
+            }
+            else {
+                this.moves = parent.moves + 1;
+            }
+        }
+    }
+    
+    public Solver(Board initial) { // find a solution to the initial board (using the A* algorithm)
+        // initializations
+        solvable = false;
+        solution = new ArrayList<Board>();
+        
+        // initializations for the queues
+        pq = new MinPQ<GTNode>(pcomparator());
+        pq.insert(new GTNode(null, initial));
+        
+        // get a twin for checking solvable or not
+        pqtwin = new MinPQ<GTNode>(pcomparator());
+        pqtwin.insert(new GTNode(null, initial.twin()));
+        
+        //dequeue a node from each pq
+        GTNode dequeued = pq.delMin();
+        GTNode dequeuedtwin = pqtwin.delMin();
+        
+        Board dqboard = dequeued.board;
+        Board dqboardtwin = dequeuedtwin.board;
+        
+        solution.add(dqboard);
+        
+        // if the dequeued node is not a goal node
+        // insert its neighbors (except the one whose board is identical with its parent's board)
+        while (!dqboard.isGoal() && !dqboardtwin.isGoal()) {
+            System.out.println("---=s---");
+            for (Board neighbod: dqboard.neighbors()) {
+                if (dequeued.parent == null || !neighbod.equals(dequeued.parent.board)) {
+                    System.out.println("m " + neighbod.manhattan());
+                    System.out.println(neighbod);
+                    pq.insert(new GTNode(dequeued, neighbod));
+                }
+            }
+            dequeued = pq.delMin();
+            finalnode = dequeued;
+//            System.out.println(dequeued.moves);
+            dqboard = dequeued.board;
+            System.out.println("dqm: " + dqboard.manhattan());
+            solution.add(dqboard);
+            
+            // do the same for the twin
+            for (Board neighbod: dqboardtwin.neighbors()) {
+                if (dequeuedtwin.parent == null || !neighbod.equals(dequeuedtwin.parent.board)) {
+                    pqtwin.insert(new GTNode(dequeuedtwin, neighbod));
+                }
+            }
+            
+            dequeuedtwin = pqtwin.delMin();
+            dqboardtwin = dequeuedtwin.board;
+        }
+        if (dqboard.isGoal()) {
+            solvable = true;
+            
+        }
+        else {
+            solution = null;
+        }
+    }
+    
+    public boolean isSolvable() {   // is the initial board solvable?
+        return solvable;
+    }
+    
+    public int moves() {  // min number of moves to solve initial board; -1 if unsolvable
+        if (solvable) {
+            return solution.size() - 1;
+        }
+        else {
+            return -1;
+        }
+    }
+    
+    public Iterable<Board> solution() { // sequence of boards in a shortest solution; null if unsolvable
+        return solution;
+    }
+    
+    // priority comparator for priority queue
+    private static Comparator<GTNode> pcomparator() {
+        return new Comparator<GTNode>() {
+
+            @Override
+            public int compare(GTNode node0, GTNode node1) {
+                return (node0.board.manhattan() + node0.moves) - (node1.board.manhattan() + node1.moves);
+            }
+            
+        };
+    }
+    
+    public static void main(String[] args) { // solve a slider puzzle (given below)
+        // create initial board from file
+        In in = new In(args[0]);
+        int N = in.readInt();
+        int[][] blocks = new int[N][N];
+        for (int i = 0; i < N; i++)
+            for (int j = 0; j < N; j++)
+                blocks[i][j] = in.readInt();
+        Board initial = new Board(blocks);
+
+        // solve the puzzle
+        Solver solver = new Solver(initial);
+
+        // print solution to standard output
+        if (!solver.isSolvable())
+            StdOut.println("No solution possible");
+        else {
+            StdOut.println("Minimum number of moves = " + solver.moves());
+            for (Board board : solver.solution()) {
+                StdOut.println(board.manhattan());
+                StdOut.println(board);
+            }
+        }
+    }
+}

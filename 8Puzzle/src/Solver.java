@@ -1,15 +1,16 @@
 import java.util.Comparator;
-import java.util.ArrayList;
 
 import edu.princeton.cs.algs4.In;
 import edu.princeton.cs.algs4.MinPQ;
+import edu.princeton.cs.algs4.Stack;
 import edu.princeton.cs.algs4.StdOut;
 
 public class Solver {
     private boolean solvable;
+    private GTNode finalnode;
     private MinPQ<GTNode> pq;
     private MinPQ<GTNode> pqtwin;
-    private ArrayList<Board> solution;
+    private Stack<Board> solution;
     
     // private class for Game Tree nodes
     private class GTNode {
@@ -32,8 +33,7 @@ public class Solver {
     public Solver(Board initial) { // find a solution to the initial board (using the A* algorithm)
         // initializations
         solvable = false;
-        solution = new ArrayList<Board>();
-        
+        solution = new Stack<Board>();
         // initializations for the queues
         pq = new MinPQ<GTNode>(pcomparator());
         pq.insert(new GTNode(null, initial));
@@ -44,12 +44,12 @@ public class Solver {
         
         //dequeue a node from each pq
         GTNode dequeued = pq.delMin();
+        finalnode = dequeued;
         GTNode dequeuedtwin = pqtwin.delMin();
         
         Board dqboard = dequeued.board;
         Board dqboardtwin = dequeuedtwin.board;
         
-        solution.add(dqboard);
         
         // if the dequeued node is not a goal node
         // insert its neighbors (except the one whose board is identical with its parent's board)
@@ -60,9 +60,9 @@ public class Solver {
                 }
             }
             dequeued = pq.delMin();
+            finalnode = dequeued;
 //            System.out.println(dequeued.moves);
             dqboard = dequeued.board;
-            solution.add(dqboard);
             
             // do the same for the twin
             for (Board neighbod: dqboardtwin.neighbors()) {
@@ -76,6 +76,12 @@ public class Solver {
         }
         if (dqboard.isGoal()) {
             solvable = true;
+            solution.push(finalnode.board);
+            while (finalnode.parent != null) {
+                finalnode = finalnode.parent;
+                solution.push(finalnode.board);
+            }
+            
         }
         else {
             solution = null;

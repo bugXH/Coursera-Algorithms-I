@@ -1,6 +1,4 @@
 import java.util.ArrayList;
-import java.util.Arrays;
-
 import edu.princeton.cs.algs4.In;
 import edu.princeton.cs.algs4.StdOut;
 
@@ -9,8 +7,14 @@ public class Board {
     private int N;
     public Board(int[][] blocks) {  // construct a board from an N-by-N array of blocks
                                     // (where blocks[i][j] = block in row i, column j)
-        board = Arrays.copyOf(blocks, blocks.length);
-        N = board.length;
+        N = blocks.length;
+        board = new int[N][N];
+        for (int i = 0; i < N; i++) {
+            for (int j = 0; j < N; j++) {
+                board[i][j] = blocks[i][j];
+            }
+        }
+        
         
     }
     
@@ -170,19 +174,19 @@ public class Board {
     }
     
     public String toString() { // string representation of this board (in the output format specified below)
-        String str = "";
-        str += Integer.toString(N) + "\n";
+        StringBuilder str = new StringBuilder();
+        str.append(Integer.toString(N) + "\n");
         for (int i = 0; i < N; i++) {
             for (int j = 0; j < N; j++) {
                 if (j < N - 1) {
-                    str += Integer.toString(board[i][j]).concat("  ");
+                    str.append(Integer.toString(board[i][j]).concat("  "));
                 }
                 else {
-                    str += Integer.toString(board[i][j]).concat("\n");
+                    str.append(Integer.toString(board[i][j]).concat("\n"));
                 }
             }
         }
-        return str;
+        return str.toString();
     }
 
     public static void main(String[] args) { // unit tests (not graded)
@@ -195,6 +199,11 @@ public class Board {
                 blocks[i][j] = in.readInt();
         
         Board initial = new Board(blocks);
+        StdOut.println("hamming " + initial.hamming());
+        StdOut.println("manhattan " + initial.manhattan());
+        StdOut.println(initial.toString());
+        
+        blocks[0][0] = 99;
         StdOut.println("hamming " + initial.hamming());
         StdOut.println("manhattan " + initial.manhattan());
         StdOut.println(initial.toString());

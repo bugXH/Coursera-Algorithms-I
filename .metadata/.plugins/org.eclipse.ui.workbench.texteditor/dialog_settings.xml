@@ -6,24 +6,27 @@
 	</section>
 	<section name="org.eclipse.ui.texteditor.FindReplaceDialog">
 		<item value="false" key="isRegEx"/>
-		<item value="uplicate(jCopy)) {" key="selection"/>
+		<item value="&#x0A;//            x.p = p;&#x0A;//        }" key="selection"/>
 		<item value="false" key="casesensitive"/>
 		<item value="false" key="incremental"/>
 		<item value="true" key="wrap"/>
 		<item value="false" key="wholeword"/>
 		<list key="findhistory">
+			<item value="&#x0A;//            x.p = p;&#x0A;//        }"/>
+			<item value="&#x09;"/>
+			<item value="solutionQueue"/>
+			<item value="Board2"/>
+			<item value="Board"/>
+			<item value="&#x0A;            System.out.println(&quot;p &quot; + p);&#x0A;            for (Point q: pointsorted) {&#x0A;                System.out.println(q);&#x0A;            }"/>
 			<item value="uplicate(jCopy)) {"/>
 			<item value="points"/>
-			<item value="&#x09;"/>
-			<item value="insert"/>
-			<item value="this."/>
-			<item value="System.out."/>
-			<item value="ni * leng + nj"/>
-			<item value=""/>
 		</list>
 		<list key="replacehistory">
-			<item value="pointscopy"/>
 			<item value="    "/>
+			<item value="solution"/>
+			<item value="Board"/>
+			<item value="Board2"/>
+			<item value="pointscopy"/>
 			<item value=""/>
 			<item value="StdOut."/>
 			<item value="site_index"/>
